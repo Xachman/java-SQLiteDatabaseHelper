@@ -27,6 +27,13 @@ public class SQLiteDatabaseHelperTest {
             Row row = rows.get(0);
 
             Assert.assertEquals(testTable.tableName(), row.getEntry(0).getValue());
+
+            List<Row> pRows = dbc.executeQuery("PRAGMA table_info(users)");
+            int count = 0;
+            for(Row pRow: pRows) {
+                Assert.assertEquals(pRow.getEntry(2).getValue(), testTable.columns().get(count).type());
+                count++;
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

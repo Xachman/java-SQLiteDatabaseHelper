@@ -19,6 +19,12 @@ public abstract class Table {
         for(Column column: columns()) {
             count++;
             columnSQL += column.name()+" "+column.type();
+            if(column.isPrimaryKey()) {
+                columnSQL += " PRIMARY KEY";
+            }
+            if(column.isAutoincrement()) {
+                columnSQL += " AUTOINCREMENT";
+            }
 
             if(count < columns().size()) {
                 columnSQL += ",";
@@ -26,7 +32,6 @@ public abstract class Table {
         }
 
         return "CREATE TABLE IF NOT EXISTS "+tableName()+" (" +
-                ((autoincrement())? "id INTEGER PRIMARY KEY AUTOINCREMENT," : "" ) +
                 columnSQL+
                 ") ";
     }
@@ -36,5 +41,4 @@ public abstract class Table {
 
     public abstract String tableName();
 
-    public abstract boolean autoincrement();
 }

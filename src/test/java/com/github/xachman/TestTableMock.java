@@ -12,6 +12,7 @@ public class TestTableMock extends Table {
     public List<Column> columns() {
         List<Column> columns = new ArrayList<Column>();
 
+        columns.add(new Column("integer", "id", true, true));
         columns.add(new Column("varchar", "first_name"));
         columns.add(new Column("varchar", "last_name"));
         columns.add(new Column("int", "age"));
@@ -23,10 +24,9 @@ public class TestTableMock extends Table {
 
     @Override
     public String tableName() {
-        return "user";
+        return "users";
     }
 
-    @Override
     public boolean autoincrement() {
         return true;
     }

@@ -53,10 +53,6 @@ public class SQLiteDatabaseHelper {
             List<Row> rows = dbc.executeQuery("SELECT * FROM " + table.tableName());
             for (Row row: rows) {
                 HashMap<String, String> values = new HashMap<String, String>();
-                if (table.autoincrement()) {
-
-                    //values.put("id", row.getString(0));
-                }
                 for (int i = 0; i < table.columns().size(); i++) {
                     //values.put(table.columns().get(i).name(), row.getString(i + 1));
                 }
@@ -72,9 +68,6 @@ public class SQLiteDatabaseHelper {
             List<Row> rows = dbc.executeQuery(sql);
             for (Row row :rows) {
                 int count = 1;
-                if (table.autoincrement()) {
-                   // values.add(row.getString(0));
-                }
                 for (Column column : table.columns()) {
                    // values.add(row.getString(count));
                     count++;
@@ -91,9 +84,6 @@ public class SQLiteDatabaseHelper {
             ArrayList<String> returnValues = new ArrayList();
             for (Row row: rows) {
                 int count = 1;
-                if (table.autoincrement()) {
-                   // returnValues.add(row.getString(0));
-                }
                 for (Column column : table.columns()) {
                    /// returnValues.add(row.getString(count));
                     count++;
@@ -160,9 +150,6 @@ public class SQLiteDatabaseHelper {
             for (Row row: rows) {
                 int count = 1;
                 HashMap<String, String> returnMap = new HashMap<String, String>();
-                if (table.autoincrement()) {
-                    //returnMap.put("id", row.getString(0));
-                }
 
                 for (Column tableColumn : table.columns()) {
                    // returnMap.put(tableColumn.name(), row.getString(count));
