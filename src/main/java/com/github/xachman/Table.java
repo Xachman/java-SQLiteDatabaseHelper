@@ -1,6 +1,7 @@
 package com.github.xachman;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by xach on 5/5/17.
@@ -31,7 +32,7 @@ public abstract class Table {
     }
 
 
-    public abstract ArrayList<Column> columns();
+    public abstract List<Column> columns();
 
     public abstract String tableName();
 

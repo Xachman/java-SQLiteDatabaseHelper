@@ -1,0 +1,33 @@
+package com.github.xachman;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by xach on 5/7/17.
+ */
+public class TestTableMock extends Table {
+
+    @Override
+    public List<Column> columns() {
+        List<Column> columns = new ArrayList<Column>();
+
+        columns.add(new Column("varchar", "first_name"));
+        columns.add(new Column("varchar", "last_name"));
+        columns.add(new Column("int", "age"));
+        columns.add(new Column("varchar", "email"));
+        columns.add(new Column("text", "description"));
+
+        return columns;
+    }
+
+    @Override
+    public String tableName() {
+        return "user";
+    }
+
+    @Override
+    public boolean autoincrement() {
+        return true;
+    }
+}
