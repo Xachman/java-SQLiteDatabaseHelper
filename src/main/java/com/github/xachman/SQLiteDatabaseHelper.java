@@ -38,7 +38,7 @@ public class SQLiteDatabaseHelper {
             dbc.execute(sql);
             List<Row> rows = dbc.executeQuery("SELECT * FROM " + table.tableName() + " ORDER BY id DESC");
             for(Row row: rows) {
-                int id = row.getInteger(0);
+                int id = (Integer) row.getEntry(0).getValue();
                 return id;
             }
         return 0;
@@ -55,10 +55,10 @@ public class SQLiteDatabaseHelper {
                 HashMap<String, String> values = new HashMap<String, String>();
                 if (table.autoincrement()) {
 
-                    values.put("id", row.getString(0));
+                    //values.put("id", row.getString(0));
                 }
                 for (int i = 0; i < table.columns().size(); i++) {
-                    values.put(table.columns().get(i).name(), row.getString(i + 1));
+                    //values.put(table.columns().get(i).name(), row.getString(i + 1));
                 }
                 returnArray.add(values);
             }
@@ -73,10 +73,10 @@ public class SQLiteDatabaseHelper {
             for (Row row :rows) {
                 int count = 1;
                 if (table.autoincrement()) {
-                    values.add(row.getString(0));
+                   // values.add(row.getString(0));
                 }
                 for (Column column : table.columns()) {
-                    values.add(row.getString(count));
+                   // values.add(row.getString(count));
                     count++;
                 }
             }
@@ -92,10 +92,10 @@ public class SQLiteDatabaseHelper {
             for (Row row: rows) {
                 int count = 1;
                 if (table.autoincrement()) {
-                    returnValues.add(row.getString(0));
+                   // returnValues.add(row.getString(0));
                 }
                 for (Column column : table.columns()) {
-                    returnValues.add(row.getString(count));
+                   /// returnValues.add(row.getString(count));
                     count++;
                 }
             }
@@ -161,11 +161,11 @@ public class SQLiteDatabaseHelper {
                 int count = 1;
                 HashMap<String, String> returnMap = new HashMap<String, String>();
                 if (table.autoincrement()) {
-                    returnMap.put("id", row.getString(0));
+                    //returnMap.put("id", row.getString(0));
                 }
 
                 for (Column tableColumn : table.columns()) {
-                    returnMap.put(tableColumn.name(), row.getString(count));
+                   // returnMap.put(tableColumn.name(), row.getString(count));
                     count++;
                 }
 

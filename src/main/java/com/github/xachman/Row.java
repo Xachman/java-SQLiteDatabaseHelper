@@ -6,26 +6,16 @@ import java.util.List;
  * Created by xach on 5/5/17.
  */
 public class Row {
-    private List<Column> columns;
-    private List<Object> values;
-    public Row(List<Column> columns, List<Object> values) {
-       this.columns = columns;
-       this.values = values;
+    private List<Entry> entries;
+    public Row(List<Entry> entries) {
+       this.entries = entries;
     }
-    public int getInteger(int num) {
-        return 0;
+    public Entry getEntry(int num) {
+        return entries.get(num);
     }
 
-    public String getString(int num) {
-       return null;
+    public List<Entry> getEntries() {
+       return entries;
     }
 
-    public String getColumn(String name) {
-        for(Column column: columns) {
-            if(column.name().equals(name)) {
-                return column.name();
-            }
-        }
-        return null;
-    }
 }

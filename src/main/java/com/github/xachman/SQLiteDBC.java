@@ -3,6 +3,7 @@ package com.github.xachman;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,7 +42,17 @@ public class SQLiteDBC implements SQLiteDBCI {
         try {
             stmt = connection.createStatement();
             ResultSet results = stmt.executeQuery(sql);
-
+            ResultSetMetaData rsmd = results.getMetaData();
+            List<Row> rows = new ArrayList<Row>();
+            while (results.next()) {
+                List<Entry> ententries = new ArrayList<Entry>();
+                for( int i = 0; i < rsmd.getColumnCount(); i ++) {
+                    int index = i+1;
+                    ententries.add(new Entry(new Column(rsmd.getColumnTypeName(index), rsmd.getColumnName(index)), results.getString(index)));
+                }
+                rows.add(new Row(ententries));
+            }
+            return rows;
         } catch (SQLException e) {
             e.printStackTrace();
         }

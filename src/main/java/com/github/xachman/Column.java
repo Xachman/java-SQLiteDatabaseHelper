@@ -9,7 +9,7 @@ public class Column {
 
     public Column(String type, String name) {
         this.name = name;
-        this.type = type;
+        this.type = type.toUpperCase();
     }
 
     public String name() {
