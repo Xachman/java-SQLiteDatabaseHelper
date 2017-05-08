@@ -33,15 +33,11 @@ public class SQLiteDatabaseHelper {
             dbc.execute("DROP TABLE IF EXISTS " + table.tableName());
     }
 
-    public int insert(Table table, ArrayList<String> values) {
+    public Row insert(Table table, ArrayList<String> values) {
             String sql = "INSERT INTO " + table.tableName() + insertValuesSQL(table, values);
             dbc.execute(sql);
-            List<Row> rows = dbc.executeQuery("SELECT * FROM " + table.tableName() + " ORDER BY id DESC");
-            for(Row row: rows) {
-                int id = (Integer) row.getEntry(0).getValue();
-                return id;
-            }
-        return 0;
+            List<Row> rows = dbc.executeQuery("SELECT * FROM " + table.tableName() + " ORDER BY id DESC LIMIT 1");
+            return rows.get(0);
     }
 
     public void close() {
