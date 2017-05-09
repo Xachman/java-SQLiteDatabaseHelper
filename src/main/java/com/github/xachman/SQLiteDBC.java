@@ -15,11 +15,9 @@ public class SQLiteDBC implements SQLiteDBCI {
         if(!file.exists()) {
             throw new FileNotFoundException();
         }
-       String url = "jdbc:sqlite:"+file.getPath();
-        System.out.println(url);
+        String url = "jdbc:sqlite:"+file.getPath();
         try {
             connection = DriverManager.getConnection(url);
-            System.out.println(connection.isClosed());
         } catch (SQLException e) {
             e.printStackTrace();
         }

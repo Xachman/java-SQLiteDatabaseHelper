@@ -44,48 +44,23 @@ public class SQLiteDatabaseHelper {
         dbc.close();
     }
 
-    public ArrayList<HashMap<String, String>> getRows(Table table) {
-        ArrayList<HashMap<String, String>> returnArray = new ArrayList<HashMap<String, String>>();
-            List<Row> rows = dbc.executeQuery("SELECT * FROM " + table.tableName());
-            for (Row row: rows) {
-                HashMap<String, String> values = new HashMap<String, String>();
-                for (int i = 0; i < table.columns().size(); i++) {
-                    //values.put(table.columns().get(i).name(), row.getString(i + 1));
-                }
-                returnArray.add(values);
-            }
-        return returnArray;
+    public List<Row> getRows(Table table) {
+        List<Row> rows = dbc.executeQuery("SELECT * FROM " + table.tableName());
+        return rows;
     }
 
-    public ArrayList<String> getRowById(Table table, int id) {
-        ArrayList<String> values = new ArrayList<String>();
-
-            String sql = "SELECT * FROM " + table.tableName() + " WHERE id=" + id;
-            List<Row> rows = dbc.executeQuery(sql);
-            for (Row row :rows) {
-                int count = 1;
-                for (Column column : table.columns()) {
-                   // values.add(row.getString(count));
-                    count++;
-                }
-            }
-        return values;
+    public Row getRowById(Table table, int id) {
+        String sql = "SELECT * FROM " + table.tableName() + " WHERE id=" + id;
+        List<Row> rows = dbc.executeQuery(sql);
+        return rows.get(0);
     }
 
-    public ArrayList<String> updateById(Table table, int id, ArrayList<String> values) {
+    public Row updateById(Table table, int id, List<String> values) {
             String sql = "UPDATE " + table.tableName() + " SET " + updateValuesSQL(table, values) + " WHERE id=" + id;
+            System.out.println(sql);
             dbc.execute(sql);
             List<Row> rows = dbc.executeQuery("SELECT * FROM " + table.tableName() + " WHERE id=" + id);
-
-            ArrayList<String> returnValues = new ArrayList();
-            for (Row row: rows) {
-                int count = 1;
-                for (Column column : table.columns()) {
-                   /// returnValues.add(row.getString(count));
-                    count++;
-                }
-            }
-            return returnValues;
+            return rows.get(0);
     }
 
     public void removeById(Table table, int id) {
@@ -93,21 +68,24 @@ public class SQLiteDatabaseHelper {
             dbc.execute(sql);
     }
 
-    private String insertValuesSQL(Table table, ArrayList<String> values) {
+    private String insertValuesSQL(Table table, List<String> values) {
         String valuesString = "";
         String columnsString = "";
         for (int i = 0; i < table.columns().size(); i++) {
             Column column = table.columns().get(i);
-            String value = values.get(i);
-            if (column.type() == "TEXT") {
-                valuesString += "'" + value + "'";
-            } else {
-                valuesString += value;
-            }
-            columnsString += column.name();
-            if ((i + 1) < table.columns().size()) {
-                valuesString += ",";
-                columnsString += ",";
+            if(i < values.size()) {
+                if(values.get(i) == null) continue;
+                String value = values.get(i);
+                if (column.type().equals("TEXT") || column.type().equals("VARCHAR")) {
+                    valuesString += "'" + value + "'";
+                } else {
+                    valuesString += value;
+                }
+                columnsString += column.name();
+                if ((i + 1) < values.size()) {
+                    valuesString += ",";
+                    columnsString += ",";
+                }
             }
         }
         String sql = "("
@@ -119,19 +97,22 @@ public class SQLiteDatabaseHelper {
         return sql;
     }
 
-    private String updateValuesSQL(Table table, ArrayList<String> values) {
+    private String updateValuesSQL(Table table, List<String> values) {
         String sqlString = "";
         for (int i = 0; i < table.columns().size(); i++) {
             Column column = table.columns().get(i);
-            String value = values.get(i);
-            sqlString += column.name() + "=";
-            if (column.type() == "TEXT") {
-                sqlString += "'" + value + "'";
-            } else {
-                sqlString += value;
-            }
-            if ((i + 1) < table.columns().size()) {
-                sqlString += ",";
+            if(i < values.size()) {
+                if(values.get(i) == null) continue;
+                String value = values.get(i);
+                sqlString += column.name() + "=";
+                if (column.type() == "TEXT" || column.type().equals("VARCHAR")) {
+                    sqlString += "'" + value + "'";
+                } else {
+                    sqlString += value;
+                }
+                if ((i + 1) < values.size()) {
+                    sqlString += ",";
+                }
             }
         }
 

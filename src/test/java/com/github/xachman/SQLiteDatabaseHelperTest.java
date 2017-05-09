@@ -71,11 +71,78 @@ public class SQLiteDatabaseHelperTest {
         Table testTable = new TestTableMock();
         dbh.createTable(testTable);
 
-        Row row = dbh.insert(testTable, new ArrayList<String>(Arrays.asList("test1","test2","test3")));
+        Row row = dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test1","test2","23")));
 
-        Assert.assertEquals(row.getEntry(0).getValue(), "test1");
+        Assert.assertEquals(row.getEntry(0).getValue(), "1");
+        Assert.assertEquals(row.getEntry(1).getValue(), "test1");
+        Assert.assertEquals(row.getEntry(2).getValue(), "test2");
+        Assert.assertEquals(row.getEntry(3).getValue(), "23");
 
+        Row row2 = dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"row2test1","row2test2","27")));
 
+        Assert.assertEquals(row2.getEntry(0).getValue(), "2");
+        Assert.assertEquals(row2.getEntry(1).getValue(), "row2test1");
+        Assert.assertEquals(row2.getEntry(2).getValue(), "row2test2");
+        Assert.assertEquals(row2.getEntry(3).getValue(), "27");
+    }
+
+    @Test
+    public void getRows() {
+        Table testTable = new TestTableMock();
+        dbh.createTable(testTable);
+
+        dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test1","test2","26")));
+        dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test3","test4","27")));
+        dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test5","test6","28")));
+
+        List<Row> rows = dbh.getRows(testTable);
+
+        Assert.assertEquals(rows.get(0).getEntry(1).getValue(), "test1");
+        Assert.assertEquals(rows.get(1).getEntry(1).getValue(), "test3");
+        Assert.assertEquals(rows.get(2).getEntry(1).getValue(), "test5");
+    }
+
+    @Test
+    public void getRowById() {
+        Table testTable = new TestTableMock();
+        dbh.createTable(testTable);
+
+        dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test1","test2","26")));
+        dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test3","test4","27")));
+        dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test5","test6","28")));
+
+        Row row = dbh.getRowById(testTable, 2);
+
+        Assert.assertEquals(row.getEntry(1).getValue(), "test3");
+    }
+
+    @Test
+    public void updateById() {
+        Table testTable = new TestTableMock();
+        dbh.createTable(testTable);
+
+        dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test1","test2","26")));
+        dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test3","test4","27")));
+        dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test5","test6","28")));
+
+        Row row = dbh.updateById(testTable,2,Arrays.asList(null,"test7","test8","30"));
+
+        Assert.assertEquals(row.getEntry(0).getValue(), "2");
+        Assert.assertEquals(row.getEntry(1).getValue(), "test7");
+        Assert.assertEquals(row.getEntry(2).getValue(), "test8");
+        Assert.assertEquals(row.getEntry(3).getValue(), "30");
+    }
+
+    @Test
+    public void removeById() {
+        Table testTable = new TestTableMock();
+        dbh.createTable(testTable);
+
+        dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test1","test2","26")));
+        dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test3","test4","27")));
+        dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test5","test6","28")));
+
+        
     }
     @After
     public void deleteDatabaseFileAndCreate() {
