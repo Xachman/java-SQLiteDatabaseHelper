@@ -57,7 +57,6 @@ public class SQLiteDatabaseHelper {
 
     public Row updateById(Table table, int id, List<String> values) {
             String sql = "UPDATE " + table.tableName() + " SET " + updateValuesSQL(table, values) + " WHERE id=" + id;
-            System.out.println(sql);
             dbc.execute(sql);
             List<Row> rows = dbc.executeQuery("SELECT * FROM " + table.tableName() + " WHERE id=" + id);
             return rows.get(0);
@@ -119,23 +118,9 @@ public class SQLiteDatabaseHelper {
         return sqlString;
     }
 
-    public ArrayList<HashMap<String, String>> searchTable(Table table, String column, String value) {
+    public List<Row> searchTable(Table table, String column, String value) {
         String sql = "SELECT * FROM " + table.tableName() + " WHERE " + column + " LIKE '%" + value + "%'";
-        ArrayList<HashMap<String, String>> returnArray = new ArrayList<HashMap<String, String>>();
-            List<Row> rows = dbc.executeQuery(sql);
-
-            for (Row row: rows) {
-                int count = 1;
-                HashMap<String, String> returnMap = new HashMap<String, String>();
-
-                for (Column tableColumn : table.columns()) {
-                   // returnMap.put(tableColumn.name(), row.getString(count));
-                    count++;
-                }
-
-                returnArray.add(returnMap);
-            }
-
-        return returnArray;
+        List<Row> rows = dbc.executeQuery(sql);
+        return rows;
     }
 }
