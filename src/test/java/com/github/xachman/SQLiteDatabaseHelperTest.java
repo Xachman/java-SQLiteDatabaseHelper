@@ -1,5 +1,8 @@
 package com.github.xachman;
 
+import com.github.xachman.Where.Comparison;
+import com.github.xachman.Where.Condition;
+import com.github.xachman.Where.Where;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -146,6 +149,8 @@ public class SQLiteDatabaseHelperTest {
 
         List<Row> rows = dbh.getRows(testTable);
 
+        dbh.close();
+
         Assert.assertEquals(rows.get(0).getEntry(0).getValue(), "2");
         Assert.assertEquals(rows.get(0).getEntry(1).getValue(), "test3");
         Assert.assertEquals(rows.get(0).getEntry(2).getValue(), "test4");
@@ -157,6 +162,32 @@ public class SQLiteDatabaseHelperTest {
         Assert.assertEquals(rows.get(1).getEntry(3).getValue(), "28");
 
         Assert.assertEquals(rows.size(), 2);
+    }
+
+    @Test
+    public void searchTable() {
+        Table testTable = new TestTableMock();
+        dbh.createTable(testTable);
+
+        dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test1","test2","26")));
+        dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test3","test4","27")));
+        dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test5","test6","28")));
+
+        Condition condition = new Condition("first_name", "'test3'", Comparison.EQUALS);
+
+        Where where = new Where(new ArrayList<Condition>(Arrays.asList(condition)));
+
+        List<Row> rows = dbh.searchTable(testTable, where);
+
+        System.out.println(where.toString());
+
+        dbh.close();
+
+        Assert.assertEquals(rows.get(0).getEntry(0).getValue(), "2");
+        Assert.assertEquals(rows.get(0).getEntry(1).getValue(), "test3");
+        Assert.assertEquals(rows.get(0).getEntry(2).getValue(), "test4");
+        Assert.assertEquals(rows.get(0).getEntry(3).getValue(), "27");
+
     }
     @After
     public void deleteDatabaseFileAndCreate() {

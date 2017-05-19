@@ -1,5 +1,7 @@
 package com.github.xachman;
 
+import com.github.xachman.Where.Where;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -15,10 +17,10 @@ import java.util.List;
 public class SQLiteDatabaseHelper {
     SQLiteDBCI dbc = null;
 
-    public SQLiteDatabaseHelper(String dbname) {
+    public SQLiteDatabaseHelper(String dbpath) {
 
         try {
-            dbc = new SQLiteDBC(new File(dbname));
+            dbc = new SQLiteDBC(new File(dbpath));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -118,8 +120,8 @@ public class SQLiteDatabaseHelper {
         return sqlString;
     }
 
-    public List<Row> searchTable(Table table, String column, String value) {
-        String sql = "SELECT * FROM " + table.tableName() + " WHERE " + column + " LIKE '%" + value + "%'";
+    public List<Row> searchTable(Table table, Where where) {
+        String sql = "SELECT * FROM " + table.tableName() + " WHERE " + where.toString();
         List<Row> rows = dbc.executeQuery(sql);
         return rows;
     }
