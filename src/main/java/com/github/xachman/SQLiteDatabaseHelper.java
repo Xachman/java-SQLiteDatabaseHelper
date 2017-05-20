@@ -15,16 +15,20 @@ import java.util.List;
 
 
 public class SQLiteDatabaseHelper {
-    SQLiteDBCI dbc = null;
+    private SQLiteDBCI dbc = null;
+    private String dbpath;
 
     public SQLiteDatabaseHelper(String dbpath) {
+        this.dbpath = dbpath;
+        open();
+    }
 
+    public void open() {
         try {
             dbc = new SQLiteDBC(new File(dbpath));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
     }
 
     public void createTable(Table table) {
