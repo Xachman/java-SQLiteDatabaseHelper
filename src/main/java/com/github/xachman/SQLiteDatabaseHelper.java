@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -42,7 +43,7 @@ public class SQLiteDatabaseHelper {
     public Row insert(Table table, ArrayList<String> values) {
             String sql = "INSERT INTO " + table.tableName() + insertValuesSQL(table, values);
             dbc.execute(sql);
-            List<Row> rows = dbc.executeQuery("SELECT * FROM " + table.tableName() + " ORDER BY id DESC LIMIT 1");
+            List<Row> rows = dbc.prepareStatement("SELECT * FROM " + table.tableName() + " ORDER BY id DESC LIMIT 1", null);
             return rows.get(0);
     }
 
@@ -51,19 +52,23 @@ public class SQLiteDatabaseHelper {
     }
 
     public List<Row> getRows(Table table) {
-        List<Row> rows = dbc.executeQuery("SELECT * FROM " + table.tableName());
+        List<Row> rows = dbc.prepareStatement("SELECT * FROM " + table.tableName(), null);
         return rows;
     }
 
     public Row getRowById(Table table, int id) {
-        String sql = "SELECT * FROM " + table.tableName() + " WHERE id=" + id;
-        List<Row> rows = dbc.executeQuery(sql);
+        String sql = "SELECT * FROM " + table.tableName() + " WHERE id=?";
+        List<Row> rows = dbc.prepareStatement(sql, new ArrayList<Value>(Arrays.asList(new Value(ValueType.NUMBER, ""+id))));
         return rows.get(0);
     }
 
-    public Row updateById(Table table, int id, List<String> values) {
-            String sql = "UPDATE " + table.tableName() + " SET " + updateValuesSQL(table, values) + " WHERE id=" + id;
-            dbc.execute(sql);
+    public Row updateById(Table table, int id, List<Value> values) {
+            String sql = "UPDATE " + table.tableName() + " SET " + updateValuesSQL(table, values) + " WHERE id=?";
+            List<Value> prepareValues = new ArrayList<Value>(values);
+
+            prepareValues.add(new Value(ValueType.NUMBER, Integer.toString(id)));
+            System.out.println(sql);
+            dbc.prepareStatement(sql, prepareValues);
             List<Row> rows = dbc.executeQuery("SELECT * FROM " + table.tableName() + " WHERE id=" + id);
             return rows.get(0);
     }
@@ -103,19 +108,13 @@ public class SQLiteDatabaseHelper {
         return sql;
     }
 
-    private String updateValuesSQL(Table table, List<String> values) {
+    private String updateValuesSQL(Table table, List<Value> values) {
         String sqlString = "";
         for (int i = 0; i < table.columns().size(); i++) {
             Column column = table.columns().get(i);
             if(i < values.size()) {
                 if(values.get(i) == null) continue;
-                String value = values.get(i);
-                sqlString += column.name() + "=";
-                if (column.type() == "TEXT" || column.type().equals("VARCHAR")) {
-                    sqlString += "'" + value + "'";
-                } else {
-                    sqlString += value;
-                }
+                sqlString += column.name() + "=?";
                 if ((i + 1) < values.size()) {
                     sqlString += ",";
                 }

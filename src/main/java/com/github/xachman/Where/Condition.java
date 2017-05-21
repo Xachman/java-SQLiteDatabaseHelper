@@ -10,6 +10,7 @@ import java.sql.Connection;
 public class Condition {
     private String column;
     private String compare;
+    private Entry entry;
     private Comparison comparison;
 
 
@@ -21,6 +22,7 @@ public class Condition {
 
     public Condition(Entry entry, Comparison comparison) {
         this.comparison = comparison;
+        this.entry = entry;
         convertEntryToCompare(entry);
     }
 
@@ -29,9 +31,11 @@ public class Condition {
     public String toString() {
         String sql = column;
         sql += getOperatorFromComparison();
-        sql += compare;
+        if(entry != null) {
+            return sql+entry.getValue().toSql();
+        }
 
-        return sql;
+        return sql += compare;
     }
     private String getOperatorFromComparison() {
        if (comparison == Comparison.EQUALS) {

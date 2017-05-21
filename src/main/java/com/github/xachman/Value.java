@@ -27,4 +27,18 @@ public class Value {
     public void setValue(String value) {
         this.value = value;
     }
+
+    public String toSql() {
+        if(getType() == ValueType.INTEGER || getType() == ValueType.NUMBER) {
+            return value;
+        }else if(getType() == ValueType.STRING) {
+            return "'"+value+"'";
+        }
+        return "";
+    }
+
+    @Override
+    public String toString() {
+        return value;
+    }
 }

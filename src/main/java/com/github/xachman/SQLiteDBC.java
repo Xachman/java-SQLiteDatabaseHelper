@@ -75,7 +75,14 @@ public class SQLiteDBC implements SQLiteDBCI {
                 List<Entry> ententries = new ArrayList<Entry>();
                 for( int i = 0; i < rsmd.getColumnCount(); i ++) {
                     int index = i+1;
-                    ententries.add(new Entry(new Column(rsmd.getColumnTypeName(index), rsmd.getColumnName(index)), results.getString(index)));
+                    String columnType = rsmd.getColumnTypeName(index);
+                    Value value;
+                    if (columnType.equals("INT") || columnType.equals("INTEGER") || columnType.equals("DOUBLE") || columnType.equals("FLOAT")) {
+                       value = new Value(ValueType.NUMBER, results.getString(index));
+                    } else {
+                        value = new Value(ValueType.STRING, results.getString(index));
+                    }
+                    ententries.add(new Entry(new Column(rsmd.getColumnTypeName(index), rsmd.getColumnName(index)), value));
                 }
                 rows.add(new Row(ententries));
             }
@@ -88,8 +95,13 @@ public class SQLiteDBC implements SQLiteDBCI {
 
     private void setStmtToValues(PreparedStatement stmt, List<Value> values) throws SQLException {
         int count = 1;
+        if(values == null) return;
        for (Value value: values) {
-           if(value.getType() == ValueType.INTEGER) {
+           if(value == null) {
+               count++;
+               continue;
+           }
+           if(value.getType() == ValueType.INTEGER || value.getType() == ValueType.NUMBER) {
                stmt.setInt(count, Integer.parseInt(value.getValue()));
            }else if(value.getType() == ValueType.STRING) {
                stmt.setString(count, value.getValue());

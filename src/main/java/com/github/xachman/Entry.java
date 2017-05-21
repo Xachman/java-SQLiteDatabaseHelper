@@ -5,9 +5,14 @@ package com.github.xachman;
  */
 public class Entry {
     private Column column;
-    private Object value;
+    private Value value;
 
     public Entry(Column column, Object value) {
+        this.column = column;
+        this.value = new Value(ValueType.STRING, value.toString());
+    }
+
+    public Entry(Column column, Value value) {
         this.column = column;
         this.value = value;
     }
@@ -17,7 +22,7 @@ public class Entry {
         return column;
     }
 
-    public Object getValue() {
+    public Value getValue() {
         return value;
     }
 }

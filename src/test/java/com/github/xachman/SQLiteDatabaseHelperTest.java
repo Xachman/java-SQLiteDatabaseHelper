@@ -39,12 +39,12 @@ public class SQLiteDatabaseHelperTest {
             List<Row> rows = dbc.executeQuery("SELECT name FROM sqlite_master WHERE type='table'");
             Row row = rows.get(0);
 
-            Assert.assertEquals(testTable.tableName(), row.getEntry(0).getValue());
+            Assert.assertEquals(testTable.tableName().toString(), row.getEntry(0).getValue().toString());
 
             List<Row> pRows = dbc.executeQuery("PRAGMA table_info(users)");
             int count = 0;
             for(Row pRow: pRows) {
-                Assert.assertEquals(pRow.getEntry(2).getValue(), testTable.columns().get(count).type());
+                Assert.assertEquals(pRow.getEntry(2).getValue().toString(), testTable.columns().get(count).type().toString());
                 count++;
             }
         } catch (FileNotFoundException e) {
@@ -76,17 +76,17 @@ public class SQLiteDatabaseHelperTest {
 
         Row row = dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test1","test2","23")));
 
-        Assert.assertEquals(row.getEntry(0).getValue(), "1");
-        Assert.assertEquals(row.getEntry(1).getValue(), "test1");
-        Assert.assertEquals(row.getEntry(2).getValue(), "test2");
-        Assert.assertEquals(row.getEntry(3).getValue(), "23");
+        Assert.assertEquals(row.getEntry(0).getValue().toString(), "1");
+        Assert.assertEquals(row.getEntry(1).getValue().toString(), "test1");
+        Assert.assertEquals(row.getEntry(2).getValue().toString(), "test2");
+        Assert.assertEquals(row.getEntry(3).getValue().toString(), "23");
 
         Row row2 = dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"row2test1","row2test2","27")));
 
-        Assert.assertEquals(row2.getEntry(0).getValue(), "2");
-        Assert.assertEquals(row2.getEntry(1).getValue(), "row2test1");
-        Assert.assertEquals(row2.getEntry(2).getValue(), "row2test2");
-        Assert.assertEquals(row2.getEntry(3).getValue(), "27");
+        Assert.assertEquals(row2.getEntry(0).getValue().toString(), "2");
+        Assert.assertEquals(row2.getEntry(1).getValue().toString(), "row2test1");
+        Assert.assertEquals(row2.getEntry(2).getValue().toString(), "row2test2");
+        Assert.assertEquals(row2.getEntry(3).getValue().toString(), "27");
     }
 
     @Test
@@ -100,9 +100,9 @@ public class SQLiteDatabaseHelperTest {
 
         List<Row> rows = dbh.getRows(testTable);
 
-        Assert.assertEquals(rows.get(0).getEntry(1).getValue(), "test1");
-        Assert.assertEquals(rows.get(1).getEntry(1).getValue(), "test3");
-        Assert.assertEquals(rows.get(2).getEntry(1).getValue(), "test5");
+        Assert.assertEquals(rows.get(0).getEntry(1).getValue().toString(), "test1");
+        Assert.assertEquals(rows.get(1).getEntry(1).getValue().toString(), "test3");
+        Assert.assertEquals(rows.get(2).getEntry(1).getValue().toString(), "test5");
     }
 
     @Test
@@ -116,7 +116,8 @@ public class SQLiteDatabaseHelperTest {
 
         Row row = dbh.getRowById(testTable, 2);
 
-        Assert.assertEquals(row.getEntry(1).getValue(), "test3");
+        System.out.print(row.getEntries().size());
+        Assert.assertEquals(row.getEntry(1).getValue().toString(), "test3");
     }
 
     @Test
@@ -128,7 +129,12 @@ public class SQLiteDatabaseHelperTest {
         dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test3","test4","27")));
         dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test5","test6","28")));
 
-        Row row = dbh.updateById(testTable,2,Arrays.asList(null,"test7","test8","30"));
+        Row row = dbh.updateById(testTable,2,Arrays.asList(
+                null,
+                new Value(ValueType.STRING,"test7"),
+                new Value(ValueType.STRING,"test8"),
+                new Value(ValueType.NUMBER,"30")
+        ));
 
         Assert.assertEquals(row.getEntry(0).getValue(), "2");
         Assert.assertEquals(row.getEntry(1).getValue(), "test7");
@@ -151,15 +157,15 @@ public class SQLiteDatabaseHelperTest {
 
         dbh.close();
 
-        Assert.assertEquals(rows.get(0).getEntry(0).getValue(), "2");
-        Assert.assertEquals(rows.get(0).getEntry(1).getValue(), "test3");
-        Assert.assertEquals(rows.get(0).getEntry(2).getValue(), "test4");
-        Assert.assertEquals(rows.get(0).getEntry(3).getValue(), "27");
+        Assert.assertEquals(rows.get(0).getEntry(0).getValue().toString(), "2");
+        Assert.assertEquals(rows.get(0).getEntry(1).getValue().toString(), "test3");
+        Assert.assertEquals(rows.get(0).getEntry(2).getValue().toString(), "test4");
+        Assert.assertEquals(rows.get(0).getEntry(3).getValue().toString(), "27");
 
-        Assert.assertEquals(rows.get(1).getEntry(0).getValue(), "3");
-        Assert.assertEquals(rows.get(1).getEntry(1).getValue(), "test5");
-        Assert.assertEquals(rows.get(1).getEntry(2).getValue(), "test6");
-        Assert.assertEquals(rows.get(1).getEntry(3).getValue(), "28");
+        Assert.assertEquals(rows.get(1).getEntry(0).getValue().toString(), "3");
+        Assert.assertEquals(rows.get(1).getEntry(1).getValue().toString(), "test5");
+        Assert.assertEquals(rows.get(1).getEntry(2).getValue().toString(), "test6");
+        Assert.assertEquals(rows.get(1).getEntry(3).getValue().toString(), "28");
 
         Assert.assertEquals(rows.size(), 2);
     }
@@ -183,10 +189,10 @@ public class SQLiteDatabaseHelperTest {
 
         dbh.close();
 
-        Assert.assertEquals(rows.get(0).getEntry(0).getValue(), "2");
-        Assert.assertEquals(rows.get(0).getEntry(1).getValue(), "test3");
-        Assert.assertEquals(rows.get(0).getEntry(2).getValue(), "test4");
-        Assert.assertEquals(rows.get(0).getEntry(3).getValue(), "27");
+        Assert.assertEquals(rows.get(0).getEntry(0).getValue().toString(), "2");
+        Assert.assertEquals(rows.get(0).getEntry(1).getValue().toString(), "test3");
+        Assert.assertEquals(rows.get(0).getEntry(2).getValue().toString(), "test4");
+        Assert.assertEquals(rows.get(0).getEntry(3).getValue().toString(), "27");
 
     }
     @After

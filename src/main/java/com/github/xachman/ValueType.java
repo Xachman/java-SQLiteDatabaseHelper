@@ -10,6 +10,7 @@ public class ValueType {
 
     public static final ValueType STRING   = new ValueType( 0, "String"   );
     public static final ValueType INTEGER  = new ValueType( 1, "Integer"  );
+    public static final ValueType NUMBER  = new ValueType( 1, "Integer");
     private ValueType( int value, String name )
     {
         this.value = value;

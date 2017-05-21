@@ -8,6 +8,7 @@ import java.util.List;
 public interface SQLiteDBCI {
     public boolean execute(String sql);
     public List<Row> executeQuery(String sql);
+    public List<Row> prepareStatement(String sql, List<Value> values);
 
     public void close();
 
