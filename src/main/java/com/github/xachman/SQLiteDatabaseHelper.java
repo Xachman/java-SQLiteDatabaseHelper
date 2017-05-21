@@ -68,9 +68,10 @@ public class SQLiteDatabaseHelper {
             return rows.get(0);
     }
 
-    public void removeById(Table table, int id) {
+    public boolean removeById(Table table, int id) {
             String sql = "DELETE FROM " + table.tableName() + " WHERE id= " + id;
             dbc.execute(sql);
+            return true;
     }
 
     private String insertValuesSQL(Table table, List<String> values) {

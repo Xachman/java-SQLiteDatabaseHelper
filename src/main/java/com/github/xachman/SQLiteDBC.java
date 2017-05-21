@@ -40,16 +40,7 @@ public class SQLiteDBC implements SQLiteDBCI {
         try {
             stmt = connection.createStatement();
             ResultSet results = stmt.executeQuery(sql);
-            ResultSetMetaData rsmd = results.getMetaData();
-            List<Row> rows = new ArrayList<Row>();
-            while (results.next()) {
-                List<Entry> ententries = new ArrayList<Entry>();
-                for( int i = 0; i < rsmd.getColumnCount(); i ++) {
-                    int index = i+1;
-                    ententries.add(new Entry(new Column(rsmd.getColumnTypeName(index), rsmd.getColumnName(index)), results.getString(index)));
-                }
-                rows.add(new Row(ententries));
-            }
+            List<Row> rows = convertResultsToRows(results);
             return rows;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -62,5 +53,48 @@ public class SQLiteDBC implements SQLiteDBCI {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<Row> prepareStatement(String sql, List<Value> values) {
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            setStmtToValues(stmt, values);
+            return convertResultsToRows(stmt.executeQuery());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<Row> convertResultsToRows(ResultSet results) {
+        ResultSetMetaData rsmd;
+        List<Row> rows = new ArrayList<Row>();
+        try {
+            rsmd = results.getMetaData();
+            while (results.next()) {
+                List<Entry> ententries = new ArrayList<Entry>();
+                for( int i = 0; i < rsmd.getColumnCount(); i ++) {
+                    int index = i+1;
+                    ententries.add(new Entry(new Column(rsmd.getColumnTypeName(index), rsmd.getColumnName(index)), results.getString(index)));
+                }
+                rows.add(new Row(ententries));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return rows;
+    }
+
+    private void setStmtToValues(PreparedStatement stmt, List<Value> values) throws SQLException {
+        int count = 1;
+       for (Value value: values) {
+           if(value.getType() == ValueType.INTEGER) {
+               stmt.setInt(count, Integer.parseInt(value.getValue()));
+           }else if(value.getType() == ValueType.STRING) {
+               stmt.setString(count, value.getValue());
+           }
+           count ++;
+       }
     }
 }

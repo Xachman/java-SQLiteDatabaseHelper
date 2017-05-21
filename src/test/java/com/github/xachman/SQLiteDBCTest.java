@@ -60,7 +60,29 @@ public class SQLiteDBCTest {
         Assert.assertEquals(entry3.getColumn().type(), compEntry3.getColumn().type());
         Assert.assertEquals(entry3.getColumn().name(), compEntry3.getColumn().name());
     }
+    @Test
+    public void preparedStatement() throws FileNotFoundException {
+        SQLiteDBC dbc = new SQLiteDBC(new File(System.getProperty("user.dir")+"/src/test/mocks/database.db"));
+        dbc.execute("CREATE TABLE test_table (test1 int, test2 text, test3 int)");
+        dbc.execute("INSERT INTO test_table (test1, test2, test3) VALUES (3, 'test text', 4)");
 
+        List<Value> values = new ArrayList<Value>();
+
+        Value value1 = new Value(ValueType.INTEGER, "3");
+        Value value2 = new Value(ValueType.STRING, "test text");
+        Value value3 = new Value(ValueType.INTEGER, "4");
+
+        values.add(value1);
+        values.add(value2);
+        values.add(value3);
+
+        List<Row> rows = dbc.prepareStatement("SELECT * FROM test_table WHERE test1=? AND test2=? AND test3=?", values);
+
+        Row row = rows.get(0);
+        Assert.assertEquals(row.getEntry(0).getValue(), "3");
+        Assert.assertEquals(row.getEntry(1).getValue(), "test text");
+        Assert.assertEquals(row.getEntry(2).getValue(), "4");
+    }
     @After
     public void deleteDatabaseFileAndCreate() {
         String filePath = System.getProperty("user.dir")+"/src/test/mocks/database.db";
