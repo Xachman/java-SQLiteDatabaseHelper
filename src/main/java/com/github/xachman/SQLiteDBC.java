@@ -111,7 +111,6 @@ public class SQLiteDBC implements SQLiteDBCI {
                count++;
                continue;
            }
-           System.out.println(value.getValue());
            if(value.getType() == ValueType.INTEGER || value.getType() == ValueType.NUMBER) {
                stmt.setInt(count, Integer.parseInt(value.getValue()));
            }else if(value.getType() == ValueType.STRING) {

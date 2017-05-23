@@ -37,9 +37,9 @@ public class SQLiteDatabaseHelper {
             dbc.execute("DROP TABLE IF EXISTS " + table.tableName());
     }
 
-    public Row insert(Table table, ArrayList<String> values) {
+    public Row insert(Table table, Map<String,String> values) {
             String sql = "INSERT INTO " + table.tableName() + insertValuesSQL(table, values);
-            dbc.execute(sql);
+            dbc.prepareUpdateStatement(sql, convertColumnMapToValueList(table, values));
             List<Row> rows = dbc.prepareStatement("SELECT * FROM " + table.tableName() + " ORDER BY id DESC LIMIT 1", null);
             return rows.get(0);
     }
@@ -64,7 +64,6 @@ public class SQLiteDatabaseHelper {
             List<Value> prepareValues = convertColumnMapToValueList(table, values);
 
             prepareValues.add(new Value(ValueType.NUMBER, Integer.toString(id)));
-            System.out.println(sql);
             dbc.prepareUpdateStatement(sql, prepareValues);
             List<Row> rows = dbc.executeQuery("SELECT * FROM " + table.tableName() + " WHERE id=" + id);
             return rows.get(0);
@@ -76,24 +75,19 @@ public class SQLiteDatabaseHelper {
             return true;
     }
 
-    private String insertValuesSQL(Table table, List<String> values) {
+    private String insertValuesSQL(Table table, Map<String, String> values) {
         String valuesString = "";
         String columnsString = "";
-        for (int i = 0; i < table.columns().size(); i++) {
-            Column column = table.columns().get(i);
-            if(i < values.size()) {
-                if(values.get(i) == null) continue;
-                String value = values.get(i);
-                if (column.type().equals("TEXT") || column.type().equals("VARCHAR")) {
-                    valuesString += "'" + value + "'";
-                } else {
-                    valuesString += value;
-                }
+        int count = 0;
+        for (Column column: table.columns()) {
+            if(values.containsKey(column.name())) {
+                valuesString += "?";
                 columnsString += column.name();
-                if ((i + 1) < values.size()) {
+                if ((count + 1) < values.size()) {
                     valuesString += ",";
                     columnsString += ",";
                 }
+                count++;
             }
         }
         String sql = "("

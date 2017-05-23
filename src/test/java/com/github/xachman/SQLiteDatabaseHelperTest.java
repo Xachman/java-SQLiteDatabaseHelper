@@ -72,14 +72,27 @@ public class SQLiteDatabaseHelperTest {
         Table testTable = new TestTableMock();
         dbh.createTable(testTable);
 
-        Row row = dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test1","test2","23")));
+        Map<String, String> map1 = new HashMap<String, String>();
+        map1.put("first_name", "test1");
+        map1.put("last_name", "test2");
+        map1.put("age", "23");
+
+        Map<String, String> map2 = new HashMap<String, String>();
+        map2.put("first_name", "row2test1");
+        map2.put("last_name", "row2test2");
+        map2.put("age", "27");
+
+
+
+
+        Row row = dbh.insert(testTable, map1);
 
         Assert.assertEquals(row.getEntry(0).getValue().toString(), "1");
         Assert.assertEquals(row.getEntry(1).getValue().toString(), "test1");
         Assert.assertEquals(row.getEntry(2).getValue().toString(), "test2");
         Assert.assertEquals(row.getEntry(3).getValue().toString(), "23");
 
-        Row row2 = dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"row2test1","row2test2","27")));
+        Row row2 = dbh.insert(testTable, map2);
 
         Assert.assertEquals(row2.getEntry(0).getValue().toString(), "2");
         Assert.assertEquals(row2.getEntry(1).getValue().toString(), "row2test1");
@@ -92,9 +105,7 @@ public class SQLiteDatabaseHelperTest {
         Table testTable = new TestTableMock();
         dbh.createTable(testTable);
 
-        dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test1","test2","26")));
-        dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test3","test4","27")));
-        dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test5","test6","28")));
+        createInsert(dbh, testTable);
 
         List<Row> rows = dbh.getRows(testTable);
 
@@ -108,13 +119,10 @@ public class SQLiteDatabaseHelperTest {
         Table testTable = new TestTableMock();
         dbh.createTable(testTable);
 
-        dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test1","test2","26")));
-        dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test3","test4","27")));
-        dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test5","test6","28")));
+        createInsert(dbh, testTable);
 
         Row row = dbh.getRowById(testTable, 2);
 
-        System.out.print(row.getEntries().size());
         Assert.assertEquals(row.getEntry(1).getValue().toString(), "test3");
     }
 
@@ -123,9 +131,7 @@ public class SQLiteDatabaseHelperTest {
         Table testTable = new TestTableMock();
         dbh.createTable(testTable);
 
-        dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test1","test2","26")));
-        dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test3","test4","27")));
-        dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test5","test6","28")));
+        createInsert(dbh, testTable);
 
         Map<String, String> map = new HashMap<String, String>();
         map.put("first_name", "test7");
@@ -145,9 +151,7 @@ public class SQLiteDatabaseHelperTest {
         Table testTable = new TestTableMock();
         dbh.createTable(testTable);
 
-        dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test1","test2","26")));
-        dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test3","test4","27")));
-        dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test5","test6","28")));
+        createInsert(dbh, testTable);
 
         dbh.removeById(testTable, 1);
 
@@ -173,17 +177,13 @@ public class SQLiteDatabaseHelperTest {
         Table testTable = new TestTableMock();
         dbh.createTable(testTable);
 
-        dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test1","test2","26")));
-        dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test3","test4","27")));
-        dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test5","test6","28")));
+        createInsert(dbh, testTable);
 
         Condition condition = new Condition("first_name", "'test3'", Comparison.EQUALS);
 
         Where where = new Where(new ArrayList<Condition>(Arrays.asList(condition)));
 
         List<Row> rows = dbh.searchTable(testTable, where);
-
-        System.out.println(where.toString());
 
         dbh.close();
 
@@ -203,5 +203,27 @@ public class SQLiteDatabaseHelperTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void createInsert(SQLiteDatabaseHelper dbh, Table testTable) {
+        Map<String, String> map1 = new HashMap<String, String>();
+        map1.put("first_name", "test1");
+        map1.put("last_name", "test2");
+        map1.put("age", "26");
+
+
+        Map<String, String> map2 = new HashMap<String, String>();
+        map2.put("first_name", "test3");
+        map2.put("last_name", "test4");
+        map2.put("age", "27");
+
+        Map<String, String> map3 = new HashMap<String, String>();
+        map3.put("first_name", "test5");
+        map3.put("last_name", "test6");
+        map3.put("age", "28");
+
+        dbh.insert(testTable, map1);
+        dbh.insert(testTable, map2);
+        dbh.insert(testTable, map3);
     }
 }
