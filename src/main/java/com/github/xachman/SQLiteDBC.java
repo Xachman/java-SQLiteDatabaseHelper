@@ -66,6 +66,16 @@ public class SQLiteDBC implements SQLiteDBCI {
         return null;
     }
 
+    public void prepareUpdateStatement(String sql, List<Value> values) {
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            setStmtToValues(stmt, values);
+            stmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public List<Row> convertResultsToRows(ResultSet results) {
         ResultSetMetaData rsmd;
         List<Row> rows = new ArrayList<Row>();
@@ -101,6 +111,7 @@ public class SQLiteDBC implements SQLiteDBCI {
                count++;
                continue;
            }
+           System.out.println(value.getValue());
            if(value.getType() == ValueType.INTEGER || value.getType() == ValueType.NUMBER) {
                stmt.setInt(count, Integer.parseInt(value.getValue()));
            }else if(value.getType() == ValueType.STRING) {

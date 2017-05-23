@@ -10,6 +10,8 @@ public interface SQLiteDBCI {
     public List<Row> executeQuery(String sql);
     public List<Row> prepareStatement(String sql, List<Value> values);
 
+    public void prepareUpdateStatement(String sql, List<Value> values);
+
     public void close();
 
 }

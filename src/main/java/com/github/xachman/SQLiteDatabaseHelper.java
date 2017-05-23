@@ -5,10 +5,7 @@ import com.github.xachman.Where.Where;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by xach on 5/5/17.
@@ -62,13 +59,13 @@ public class SQLiteDatabaseHelper {
         return rows.get(0);
     }
 
-    public Row updateById(Table table, int id, List<Value> values) {
+    public Row updateById(Table table, int id, Map<String, String> values) {
             String sql = "UPDATE " + table.tableName() + " SET " + updateValuesSQL(table, values) + " WHERE id=?";
-            List<Value> prepareValues = new ArrayList<Value>(values);
+            List<Value> prepareValues = convertColumnMapToValueList(table, values);
 
             prepareValues.add(new Value(ValueType.NUMBER, Integer.toString(id)));
             System.out.println(sql);
-            dbc.prepareStatement(sql, prepareValues);
+            dbc.prepareUpdateStatement(sql, prepareValues);
             List<Row> rows = dbc.executeQuery("SELECT * FROM " + table.tableName() + " WHERE id=" + id);
             return rows.get(0);
     }
@@ -108,20 +105,39 @@ public class SQLiteDatabaseHelper {
         return sql;
     }
 
-    private String updateValuesSQL(Table table, List<Value> values) {
+    private String updateValuesSQL(Table table, Map<String, String> values) {
         String sqlString = "";
-        for (int i = 0; i < table.columns().size(); i++) {
-            Column column = table.columns().get(i);
-            if(i < values.size()) {
-                if(values.get(i) == null) continue;
+
+        int count = 1;
+        for(Column column: table.columns()) {
+            if(values.containsKey(column.name())) {
                 sqlString += column.name() + "=?";
-                if ((i + 1) < values.size()) {
+                if(count < values.size()) {
                     sqlString += ",";
                 }
+                count++;
             }
         }
-
         return sqlString;
+    }
+
+    private List<Value> convertColumnMapToValueList(Table table, Map<String, String> map) {
+        List<Value> values = new ArrayList<Value>();
+        for(Column column: table.columns()) {
+           if(map.containsKey(column.name())) {
+              values.add(new Value(getValueTypeFromColumn(column), map.get(column.name())));
+           }
+        }
+
+        return values;
+    }
+
+    private ValueType getValueTypeFromColumn(Column column) {
+        String columnType = column.type();
+        if (columnType.equals("INT") || columnType.equals("INTEGER") || columnType.equals("DOUBLE") || columnType.equals("FLOAT")) {
+            return ValueType.NUMBER;
+        }
+        return ValueType.STRING;
     }
 
     public List<Row> searchTable(Table table, Where where) {

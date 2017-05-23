@@ -12,9 +12,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by xach on 5/7/17.
@@ -129,17 +127,17 @@ public class SQLiteDatabaseHelperTest {
         dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test3","test4","27")));
         dbh.insert(testTable, new ArrayList<String>(Arrays.asList(null,"test5","test6","28")));
 
-        Row row = dbh.updateById(testTable,2,Arrays.asList(
-                null,
-                new Value(ValueType.STRING,"test7"),
-                new Value(ValueType.STRING,"test8"),
-                new Value(ValueType.NUMBER,"30")
-        ));
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("first_name", "test7");
+        map.put("last_name", "test8");
+        map.put("age", "30");
 
-        Assert.assertEquals(row.getEntry(0).getValue(), "2");
-        Assert.assertEquals(row.getEntry(1).getValue(), "test7");
-        Assert.assertEquals(row.getEntry(2).getValue(), "test8");
-        Assert.assertEquals(row.getEntry(3).getValue(), "30");
+        Row row = dbh.updateById(testTable,2, map);
+
+        Assert.assertEquals(row.getEntry(0).getValue().toString(), "2");
+        Assert.assertEquals(row.getEntry(1).getValue().toString(), "test7");
+        Assert.assertEquals(row.getEntry(2).getValue().toString(), "test8");
+        Assert.assertEquals(row.getEntry(3).getValue().toString(), "30");
     }
 
     @Test
