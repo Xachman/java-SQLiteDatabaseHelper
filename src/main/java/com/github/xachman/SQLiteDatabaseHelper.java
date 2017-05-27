@@ -135,8 +135,8 @@ public class SQLiteDatabaseHelper {
     }
 
     public List<Row> searchTable(Table table, Where where) {
-        String sql = "SELECT * FROM " + table.tableName() + " WHERE " + where.toString();
-        List<Row> rows = dbc.executeQuery(sql);
+        String sql = "SELECT * FROM " + table.tableName() + " WHERE " + where.toPreparedString();
+        List<Row> rows = dbc.prepareStatement(sql, where.values());
         return rows;
     }
 }

@@ -48,7 +48,7 @@ public class ConditionTest {
 
     @Test
     public void likeWildcard() {
-        Condition condition = new Condition("name","'%Ted'",Comparison.LIKE);
+        Condition condition = new Condition(new Entry( new Column("TEXT", "name"),"Ted"),Comparison.LIKE);
 
         String compare = "name LIKE '%Ted'";
 

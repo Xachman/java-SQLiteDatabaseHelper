@@ -179,7 +179,7 @@ public class SQLiteDatabaseHelperTest {
 
         createInsert(dbh, testTable);
 
-        Condition condition = new Condition("first_name", "'test3'", Comparison.EQUALS);
+        Condition condition = new Condition(new Entry(new Column( "TEXT", "first_name"), "test3"), Comparison.EQUALS);
 
         Where where = new Where(new ArrayList<Condition>(Arrays.asList(condition)));
 

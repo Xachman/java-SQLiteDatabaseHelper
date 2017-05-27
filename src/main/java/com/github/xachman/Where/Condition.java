@@ -1,6 +1,8 @@
 package com.github.xachman.Where;
 
 import com.github.xachman.Entry;
+import com.github.xachman.Value;
+import com.github.xachman.ValueType;
 
 import java.sql.Connection;
 
@@ -14,12 +16,6 @@ public class Condition {
     private Comparison comparison;
 
 
-    public Condition(String column, String compare, Comparison comparison) {
-        this.comparison = comparison;
-        this.compare = compare;
-        this.column = column;
-    }
-
     public Condition(Entry entry, Comparison comparison) {
         this.comparison = comparison;
         this.entry = entry;
@@ -31,11 +27,16 @@ public class Condition {
     public String toString() {
         String sql = column;
         sql += getOperatorFromComparison();
-        if(entry != null) {
-            return sql+entry.getValue().toSql();
-        }
 
-        return sql += compare;
+        return sql+entry.getValue().toSql();
+
+    }
+
+    public String toPreparedString() {
+        String sql = column;
+        sql += getOperatorFromComparison();
+
+        return sql += "?";
     }
     private String getOperatorFromComparison() {
        if (comparison == Comparison.EQUALS) {
@@ -60,6 +61,10 @@ public class Condition {
 
         column = entry.getColumn().name();
         this.compare = compare;
+    }
+
+    public Value getValue() {
+        return this.entry.getValue();
     }
 
 }

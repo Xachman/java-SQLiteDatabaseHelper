@@ -18,14 +18,30 @@ public class WhereTest {
     public void constructOneConditionList() {
         List<Condition> conditions = new ArrayList<Condition>();
 
-        conditions.add(new Condition("first_name", "'Ted'", Comparison.EQUALS));
-        conditions.add(new Condition("age", "21", Comparison.GREATERTHAN));
-        conditions.add(new Condition("last_name", "'Thomas'", Comparison.EQUALS));
+        conditions.add(new Condition(new Entry(new Column("TEXT", "first_name"), "Ted"), Comparison.EQUALS));
+        conditions.add(new Condition(new Entry(new Column("INT",  "age"), "21"), Comparison.GREATERTHAN));
+        conditions.add(new Condition(new Entry(new Column("TEXT", "last_name"), "Thomas"), Comparison.EQUALS));
 
         String compare = "first_name='Ted' AND age>21 AND last_name='Thomas'";
 
         Where where = new Where(conditions);
 
         Assert.assertEquals(compare, where.toString());
+    }
+
+    @Test
+    public void preparedStatementString() {
+
+        List<Condition> conditions = new ArrayList<Condition>();
+
+        conditions.add(new Condition(new Entry(new Column("TEXT", "first_name"), "Ted"), Comparison.EQUALS));
+        conditions.add(new Condition(new Entry(new Column("INT",  "age"), "23"), Comparison.GREATERTHAN));
+        conditions.add(new Condition(new Entry(new Column("TEXT", "last_name"), "Thomas"), Comparison.EQUALS));
+
+        String compare = "first_name=? AND age>? AND last_name=?";
+
+        Where where = new Where(conditions);
+
+        Assert.assertEquals(compare, where.toPreparedString());
     }
 }
