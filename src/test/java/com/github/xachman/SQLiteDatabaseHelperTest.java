@@ -179,11 +179,11 @@ public class SQLiteDatabaseHelperTest {
 
         createInsert(dbh, testTable);
 
-        Condition condition = new Condition(new Entry(new Column( "TEXT", "first_name"), "test3"), Comparison.EQUALS);
-
-        Where where = new Where(new ArrayList<Condition>(Arrays.asList(condition)));
-
-        List<Row> rows = dbh.searchTable(testTable, where);
+        Map<String, String> map = new HashMap<>();
+        map.put("column", "first_name");
+        map.put("value", "test3");
+        map.put("operator", "=");
+        List<Row> rows = dbh.searchTable(testTable, new ArrayList<>(Arrays.asList(map)));
 
         dbh.close();
 

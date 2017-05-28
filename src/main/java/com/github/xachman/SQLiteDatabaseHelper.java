@@ -1,6 +1,9 @@
 package com.github.xachman;
 
+import com.github.xachman.Where.Comparison;
+import com.github.xachman.Where.Condition;
 import com.github.xachman.Where.Where;
+import org.omg.CosNaming.NamingContextPackage.NotFound;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -134,9 +137,43 @@ public class SQLiteDatabaseHelper {
         return ValueType.STRING;
     }
 
-    public List<Row> searchTable(Table table, Where where) {
+    public List<Row> searchTable(Table table, List<Map<String, String>> maps) {
+            List<Condition> conditions = new ArrayList<Condition>();
+            for(Map<String, String> map:  maps) {
+                try {
+                    conditions.add(new Condition(new Entry(getColumnFromTable(table, map.get("column")), map.get("value")), getComparisonFromString(map.get("operator"))));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        Where where = new Where(conditions);
         String sql = "SELECT * FROM " + table.tableName() + " WHERE " + where.toPreparedString();
         List<Row> rows = dbc.prepareStatement(sql, where.values());
         return rows;
+    }
+
+    private Column getColumnFromTable(Table table, String columnName) throws Exception{
+        for(Column column: table.columns()) {
+            if(column.name().equals(columnName)) {
+                return column;
+            }
+        }
+
+        throw new Exception("Column Not Found");
+    }
+
+    private Comparison getComparisonFromString(String operator) throws Exception {
+        switch (operator) {
+            case "=":
+                return Comparison.EQUALS;
+            case "LIKE":
+                return Comparison.LIKE;
+            case ">":
+                return Comparison.GREATERTHAN;
+            case "<":
+                return Comparison.LESSTHAN;
+            default:
+                throw new Exception("Operator not found");
+        }
     }
 }
