@@ -1,5 +1,7 @@
-package com.github.xachman;
+package com.github.xachman.mocks;
 
+import com.github.xachman.Column;
+import com.github.xachman.Table;
 import java.util.ArrayList;
 import java.util.List;
 

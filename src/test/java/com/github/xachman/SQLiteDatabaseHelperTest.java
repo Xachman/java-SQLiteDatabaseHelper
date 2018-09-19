@@ -1,5 +1,6 @@
 package com.github.xachman;
 
+import com.github.xachman.mocks.TestTableMock;
 import com.github.xachman.Where.Comparison;
 import com.github.xachman.Where.Condition;
 import com.github.xachman.Where.Where;
