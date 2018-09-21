@@ -33,7 +33,7 @@ public abstract class Table {
 
         return "CREATE TABLE IF NOT EXISTS "+tableName()+" (" +
                 columnSQL+
-                ") ";
+                ")";
     }
 
 

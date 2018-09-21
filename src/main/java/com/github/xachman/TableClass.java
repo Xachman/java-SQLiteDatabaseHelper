@@ -7,6 +7,7 @@ package com.github.xachman;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,8 +40,9 @@ public class TableClass extends Table {
     private void setUpColumns() {
         List<Column> columns = new ArrayList<>();
         for(Field field: c.getDeclaredFields()) {
+        System.out.println(field);        
             field.setAccessible(true);
-            
+            columns.add(assembleColumnFromField(field));
         }
 
         this.columns = columns;
@@ -51,8 +53,30 @@ public class TableClass extends Table {
     }
     
     private Column assembleColumnFromField(Field field) {
-        if(field.getType().equals(Integer.class)) {
-            return new Column();
+        if(field.getType().equals(int.class) || field.getType().equals(Integer.class)) {
+            return new Column("integer", convertCamelCase(field.getName()));
         }
-    }    
+        if(field.getType().equals(String.class)) {
+            return new Column("VARCHAR(255)", convertCamelCase(field.getName()));
+        }
+        if(field.getType().equals(boolean.class)) {
+            return new Column("TINYINT", convertCamelCase(field.getName()));
+        }
+        if(field.getType().equals(Date.class)) {
+            return new Column("DATETIME", convertCamelCase(field.getName()));
+        }
+        if(field.getType().equals(char.class)) {
+            return new Column("CHARACTER(1)",convertCamelCase(field.getName()));
+        }
+        return new Column("VARCHAR(255)", convertCamelCase(field.getName()));
+    }  
+
+    private String convertCamelCase(String input) {
+        String regex = "([a-z])([A-Z]+)";
+        String replacement = "$1_$2";
+        String result = input
+                           .replaceAll(regex, replacement)
+                           .toLowerCase();
+        return result;
+    }
 }
