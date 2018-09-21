@@ -5,7 +5,7 @@
  */
 package com.github.xachman;
 
-import com.github.xachman.mocks.Users;
+import com.github.xachman.mocks.User;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -16,7 +16,7 @@ import org.junit.Test;
 public class TableClassTest {
     @Test
     public void testCreateTableSql() {
-        TableClass tableClass = new TableClass(Users.class);
+        TableClass tableClass = new TableClass(User.class);
         
         String sql = tableClass.createTableSQL();
 
@@ -28,6 +28,26 @@ public class TableClassTest {
                             "username VARCHAR(255),"+
                             "email VARCHAR(255),"+
                             "created_date DATETIME,"+ 
+                            "type CHARACTER(1),"+
+                            "active TINYINT"+
+                            ")";
+
+        Assert.assertEquals(expectSql, sql);
+    }    
+    @Test
+    public void testAnnotations() {
+        TableClass tableClass = new TableClass(User.class);
+        
+        String sql = tableClass.createTableSQL();
+
+        String expectSql = "CREATE TABLE IF NOT EXISTS users_table ("+ 
+                            "id INTEGER PRIMARYKEY AUTOINCREMENT,"+
+                            "first_name VARCHAR(255),"+
+                            "last_name VARCHAR(255),"+
+                            "password VARCHAR(255),"+
+                            "username VARCHAR(30),"+
+                            "email VARCHAR(255),"+
+                            "created_date DATE,"+ 
                             "type CHARACTER(1),"+
                             "active TINYINT"+
                             ")";

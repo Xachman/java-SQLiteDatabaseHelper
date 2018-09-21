@@ -49,12 +49,20 @@ public class TableClass extends Table {
     }
 
     private void setUpName() {
-        tableName = c.getSimpleName().toLowerCase();
+        String name = c.getSimpleName().toLowerCase();
+        String lastChar = name.substring(name.length()-1);
+
+        if(lastChar.equals("s")) {
+            tableName = name;
+            return;
+        }
+        
+        tableName = c.getSimpleName().toLowerCase()+"s";
     }
     
     private Column assembleColumnFromField(Field field) {
         if(field.getType().equals(int.class) || field.getType().equals(Integer.class)) {
-            return new Column("integer", convertCamelCase(field.getName()));
+            return new Column("INTEGER", convertCamelCase(field.getName()));
         }
         if(field.getType().equals(String.class)) {
             return new Column("VARCHAR(255)", convertCamelCase(field.getName()));

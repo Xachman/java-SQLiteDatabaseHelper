@@ -11,7 +11,7 @@ import java.util.Date;
  *
  * @author xach
  */
-public class Users {
+public class User {
     private int id;
     private String firstName;
     private String lastName;
