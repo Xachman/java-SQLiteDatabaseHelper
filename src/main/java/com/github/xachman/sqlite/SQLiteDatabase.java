@@ -88,12 +88,68 @@ public class SQLiteDatabase implements DatabaseI {
             return rows.get(0);
     }
 
+    @Override
     public boolean removeById(Table table, int id) {
             String sql = "DELETE FROM " + table.tableName() + " WHERE id= " + id;
             dbc.execute(sql);
             return true;
     }
 
+    @Override
+    public List<Row> searchTable(Table table, List<Map<String, String>> maps) {
+            List<Condition> conditions = new ArrayList<Condition>();
+            for(Map<String, String> map:  maps) {
+                try {
+                    conditions.add(new Condition(new Entry(getColumnFromTable(table, map.get("column")), map.get("value")), getComparisonFromString(map.get("operator"))));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        Where where = new Where(conditions);
+        String sql = "SELECT * FROM " + table.tableName() + " WHERE " + where.toPreparedString();
+        List<Row> rows = dbc.prepareStatement(sql, where.values());
+        return rows;
+    }
+    @Override
+    public void createTable(Class c) {
+        createTable(new TableClass(c));
+    }
+
+    @Override
+    public void dropTable(Class c) {
+        dropTable(new TableClass(c));
+    }
+
+    @Override
+    public Row insert(Object o) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public <T> List<T> getRows(Class c) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public <T> List<T> getRowById(Class c, int id) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public <T> T updateById(Class c, int id, Object object) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean removeById(Class c, int id) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public <T> List<T> searchTable(Class c, List<Map<String, String>> maps) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
     private String insertValuesSQL(Table table, Map<String, String> values) {
         String valuesString = "";
         String columnsString = "";
@@ -153,20 +209,6 @@ public class SQLiteDatabase implements DatabaseI {
         return ValueType.STRING;
     }
 
-    public List<Row> searchTable(Table table, List<Map<String, String>> maps) {
-            List<Condition> conditions = new ArrayList<Condition>();
-            for(Map<String, String> map:  maps) {
-                try {
-                    conditions.add(new Condition(new Entry(getColumnFromTable(table, map.get("column")), map.get("value")), getComparisonFromString(map.get("operator"))));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        Where where = new Where(conditions);
-        String sql = "SELECT * FROM " + table.tableName() + " WHERE " + where.toPreparedString();
-        List<Row> rows = dbc.prepareStatement(sql, where.values());
-        return rows;
-    }
 
     private Column getColumnFromTable(Table table, String columnName) throws Exception{
         for(Column column: table.columns()) {
@@ -193,43 +235,4 @@ public class SQLiteDatabase implements DatabaseI {
         }
     }
 
-    @Override
-    public void createTable(Class c) {
-        createTable(new TableClass(c));
-    }
-
-    @Override
-    public void dropTable(Class c) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Row insert(Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public <T> List<T> getRows(Class c) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public <T> List<T> getRowById(Class c, int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public <T> T updateById(Class c, int id, Object object) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean removeById(Class c, int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public <T> List<T> searchTable(Class c, List<Map<String, String>> maps) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 }

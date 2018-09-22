@@ -8,6 +8,7 @@ import com.github.xachman.mocks.TestTableMock;
 import com.github.xachman.Where.Comparison;
 import com.github.xachman.Where.Condition;
 import com.github.xachman.Where.Where;
+import com.github.xachman.mocks.UsersAnnotation;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -55,6 +56,31 @@ public class SQLiteDatabaseTest {
         }
 
     }
+    @Test
+    public void createTableClass() {
+        dbh.createTable(UsersAnnotation.class);
+        try {
+            SQLiteDatabaseConnection dbc = new SQLiteDatabaseConnection(new File(filePath));
+            List<Row> rows = dbc.executeQuery("SELECT name FROM sqlite_master WHERE type='table'");
+            Row row = rows.get(0);
+
+            Assert.assertEquals("users_table", row.getEntry(0).getValue().toString());
+
+            List<Row> pRows = dbc.executeQuery("PRAGMA table_info(users_table)");
+
+            String[] types = {"INTEGER", "VARCHAR(255)", "VARCHAR(255)","VARCHAR(255)", "VARCHAR(30)", "VARCHAR(255)", "DATE", "CHARACTER(1)", "TINYINT"};
+            
+            Assert.assertTrue(pRows.size() == types.length);
+            int count = 0;
+            for(Row pRow: pRows) {
+                Assert.assertEquals(pRow.getEntry(2).getValue().toString(), types[count]);
+                count++;
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     @Test
     public void dropTableRemovesTable() {
@@ -62,6 +88,21 @@ public class SQLiteDatabaseTest {
         dbh.createTable(testTable);
 
         dbh.dropTable(testTable);
+
+
+        try {
+            SQLiteDatabaseConnection dbc = new SQLiteDatabaseConnection(new File(filePath));
+            List<Row> rows = dbc.executeQuery("SELECT name FROM sqlite_master WHERE type='table'");
+            Assert.assertEquals(1, rows.size());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+    @Test
+    public void dropTableRemovesTableClass() {
+        dbh.createTable(UsersAnnotation.class);
+
+        dbh.dropTable(UsersAnnotation.class);
 
 
         try {
