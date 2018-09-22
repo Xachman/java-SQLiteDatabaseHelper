@@ -25,11 +25,11 @@ import java.util.Map;
  */
 
 
-public class SQLiteDatabaseHelper implements DatabaseI {
+public class SQLiteDatabase implements DatabaseI {
     private DatabaseConnectionI dbc = null;
     private String dbpath;
 
-    public SQLiteDatabaseHelper(String dbpath) {
+    public SQLiteDatabase(String dbpath) {
         this.dbpath = dbpath;
         open();
     }
@@ -196,5 +196,40 @@ public class SQLiteDatabaseHelper implements DatabaseI {
     @Override
     public void createTable(Class c) {
         createTable(new TableClass(c));
+    }
+
+    @Override
+    public void dropTable(Class c) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Row insert(Object o) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public <T> List<T> getRows(Class c) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public <T> List<T> getRowById(Class c, int id) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public <T> T updateById(Class c, int id, Object object) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean removeById(Class c, int id) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public <T> List<T> searchTable(Class c, List<Map<String, String>> maps) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

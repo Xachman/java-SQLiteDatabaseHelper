@@ -3,7 +3,7 @@ package com.github.xachman.sqlite;
 import com.github.xachman.Row;
 import com.github.xachman.Table;
 import com.github.xachman.sqlite.SQLiteDatabaseConnection;
-import com.github.xachman.sqlite.SQLiteDatabaseHelper;
+import com.github.xachman.sqlite.SQLiteDatabase;
 import com.github.xachman.mocks.TestTableMock;
 import com.github.xachman.Where.Comparison;
 import com.github.xachman.Where.Condition;
@@ -22,14 +22,14 @@ import java.util.*;
 /**
  * Created by xach on 5/7/17.
  */
-public class SQLiteDatabaseHelperTest {
+public class SQLiteDatabaseTest {
     private String filePath;
-    private SQLiteDatabaseHelper dbh;
+    private SQLiteDatabase dbh;
 
     @Before
     public void before() {
         filePath = System.getProperty("user.dir")+"/src/test/mocks/database.db";
-        dbh = new SQLiteDatabaseHelper(filePath);
+        dbh = new SQLiteDatabase(filePath);
     }
 
     @Test
@@ -210,7 +210,7 @@ public class SQLiteDatabaseHelperTest {
         }
     }
 
-    private void createInsert(SQLiteDatabaseHelper dbh, Table testTable) {
+    private void createInsert(SQLiteDatabase dbh, Table testTable) {
         Map<String, String> map1 = new HashMap<String, String>();
         map1.put("first_name", "test1");
         map1.put("last_name", "test2");
