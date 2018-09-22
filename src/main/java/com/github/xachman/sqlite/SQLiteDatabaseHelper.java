@@ -2,9 +2,11 @@ package com.github.xachman.sqlite;
 
 import com.github.xachman.Column;
 import com.github.xachman.DatabaseConnectionI;
+import com.github.xachman.DatabaseI;
 import com.github.xachman.Entry;
 import com.github.xachman.Row;
 import com.github.xachman.Table;
+import com.github.xachman.TableClass;
 import com.github.xachman.Value;
 import com.github.xachman.ValueType;
 import com.github.xachman.Where.Comparison;
@@ -23,7 +25,7 @@ import java.util.Map;
  */
 
 
-public class SQLiteDatabaseHelper {
+public class SQLiteDatabaseHelper implements DatabaseI {
     private DatabaseConnectionI dbc = null;
     private String dbpath;
 
@@ -40,14 +42,17 @@ public class SQLiteDatabaseHelper {
         }
     }
 
+    @Override
     public void createTable(Table table) {
             dbc.execute(table.createTableSQL());
     }
 
+    @Override
     public void dropTable(Table table) {
             dbc.execute("DROP TABLE IF EXISTS " + table.tableName());
     }
 
+    @Override
     public Row insert(Table table, Map<String,String> values) {
             String sql = "INSERT INTO " + table.tableName() +" " + insertValuesSQL(table, values);
             dbc.prepareUpdateStatement(sql, convertColumnMapToValueList(table, values));
@@ -59,17 +64,20 @@ public class SQLiteDatabaseHelper {
         dbc.close();
     }
 
+    @Override
     public List<Row> getRows(Table table) {
         List<Row> rows = dbc.prepareStatement("SELECT * FROM " + table.tableName(), null);
         return rows;
     }
 
+    @Override
     public Row getRowById(Table table, int id) {
         String sql = "SELECT * FROM " + table.tableName() + " WHERE id=?";
         List<Row> rows = dbc.prepareStatement(sql, new ArrayList<Value>(Arrays.asList(new Value(ValueType.NUMBER, ""+id))));
         return rows.get(0);
     }
 
+    @Override
     public Row updateById(Table table, int id, Map<String, String> values) {
             String sql = "UPDATE " + table.tableName() + " SET " + updateValuesSQL(table, values) + " WHERE id=?";
             List<Value> prepareValues = convertColumnMapToValueList(table, values);
@@ -183,5 +191,10 @@ public class SQLiteDatabaseHelper {
             default:
                 throw new Exception("Operator not found");
         }
+    }
+
+    @Override
+    public void createTable(Class c) {
+        createTable(new TableClass(c));
     }
 }
