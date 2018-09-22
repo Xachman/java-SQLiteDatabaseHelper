@@ -7,6 +7,7 @@ package com.github.xachman;
 
 import com.github.xachman.mocks.User;
 import com.github.xachman.mocks.UsersAnnotation;
+import java.util.Date;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -55,4 +56,26 @@ public class TableClassTest {
 
         Assert.assertEquals(expectSql, sql);
     }    
+
+    @Test
+    public void testInsertSql() {
+        TableClass tableClass = new TableClass(UsersAnnotation.class);
+        
+
+        UsersAnnotation user = new UsersAnnotation();
+
+        user.setFirstName("Ted");
+        user.setLastName("Dykes");
+        user.setPassword("badpass");
+        user.setUsername("tdykes");
+        user.setEmail("ted@gmail.com");
+        user.setCreatedDate(new Date());
+        user.setType('R');
+        user.setActive(true);
+
+
+        String sql = tableClass.insertSql(user);
+
+        
+    }
 }

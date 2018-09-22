@@ -5,7 +5,6 @@
  */
 package com.github.xachman;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
@@ -118,5 +117,11 @@ public class TableClass extends Table {
     private Column makeColumn(String type, String name, int length) {
         return makeColumn(type, name, length, false, false);
     }
+
+    public String insertSql(Object object) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+     
     
 }
