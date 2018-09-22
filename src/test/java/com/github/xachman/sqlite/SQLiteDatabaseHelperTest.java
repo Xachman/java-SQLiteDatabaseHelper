@@ -1,5 +1,9 @@
-package com.github.xachman;
+package com.github.xachman.sqlite;
 
+import com.github.xachman.Row;
+import com.github.xachman.Table;
+import com.github.xachman.sqlite.SQLiteDatabaseConnection;
+import com.github.xachman.sqlite.SQLiteDatabaseHelper;
 import com.github.xachman.mocks.TestTableMock;
 import com.github.xachman.Where.Comparison;
 import com.github.xachman.Where.Condition;
@@ -34,7 +38,7 @@ public class SQLiteDatabaseHelperTest {
         dbh.createTable(testTable);
 
         try {
-            SQLiteDBC dbc = new SQLiteDBC(new File(filePath));
+            SQLiteDatabaseConnection dbc = new SQLiteDatabaseConnection(new File(filePath));
             List<Row> rows = dbc.executeQuery("SELECT name FROM sqlite_master WHERE type='table'");
             Row row = rows.get(0);
 
@@ -61,7 +65,7 @@ public class SQLiteDatabaseHelperTest {
 
 
         try {
-            SQLiteDBC dbc = new SQLiteDBC(new File(filePath));
+            SQLiteDatabaseConnection dbc = new SQLiteDatabaseConnection(new File(filePath));
             List<Row> rows = dbc.executeQuery("SELECT name FROM sqlite_master WHERE type='table'");
             Assert.assertEquals(1, rows.size());
         } catch (FileNotFoundException e) {

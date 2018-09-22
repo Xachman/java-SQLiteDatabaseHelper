@@ -1,5 +1,11 @@
-package com.github.xachman;
+package com.github.xachman.sqlite;
 
+import com.github.xachman.Column;
+import com.github.xachman.DatabaseConnectionI;
+import com.github.xachman.Entry;
+import com.github.xachman.Row;
+import com.github.xachman.Value;
+import com.github.xachman.ValueType;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.*;
@@ -9,9 +15,9 @@ import java.util.List;
 /**
  * Created by xach on 5/5/17.
  */
-public class SQLiteDBC implements SQLiteDBCI {
+public class SQLiteDatabaseConnection implements DatabaseConnectionI {
     private Connection connection;
-    public SQLiteDBC(File file) throws FileNotFoundException {
+    public SQLiteDatabaseConnection(File file) throws FileNotFoundException {
         if(!file.exists()) {
             throw new FileNotFoundException();
         }

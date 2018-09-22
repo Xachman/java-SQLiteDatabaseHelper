@@ -1,5 +1,11 @@
-package com.github.xachman;
+package com.github.xachman.sqlite;
 
+import com.github.xachman.Column;
+import com.github.xachman.Entry;
+import com.github.xachman.Row;
+import com.github.xachman.Value;
+import com.github.xachman.ValueType;
+import com.github.xachman.sqlite.SQLiteDatabaseConnection;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
 import org.junit.After;
 import org.junit.Assert;
@@ -17,12 +23,12 @@ public class SQLiteDBCTest {
     @Test(expected = FileNotFoundException.class)
     public void throwErrorIfNoFile() throws FileNotFoundException {
         String path = System.getProperty("user.dir")+"/src/test/mocks/tmp/nodatabase.db";
-        SQLiteDBC dbc = new SQLiteDBC(new File(path));
+        SQLiteDatabaseConnection dbc = new SQLiteDatabaseConnection(new File(path));
     }
 
     @Test
     public void insertValues() throws FileNotFoundException {
-        SQLiteDBC dbc = new SQLiteDBC(new File(System.getProperty("user.dir")+"/src/test/mocks/database.db"));
+        SQLiteDatabaseConnection dbc = new SQLiteDatabaseConnection(new File(System.getProperty("user.dir")+"/src/test/mocks/database.db"));
         dbc.execute("CREATE TABLE test_table (test1 int, test2 text, test3 int)");
         dbc.execute("INSERT INTO test_table (test1, test2, test3) VALUES (3, 'test text', 4)");
 
@@ -63,7 +69,7 @@ public class SQLiteDBCTest {
     }
     @Test
     public void preparedStatement() throws FileNotFoundException {
-        SQLiteDBC dbc = new SQLiteDBC(new File(System.getProperty("user.dir")+"/src/test/mocks/database.db"));
+        SQLiteDatabaseConnection dbc = new SQLiteDatabaseConnection(new File(System.getProperty("user.dir")+"/src/test/mocks/database.db"));
         dbc.execute("CREATE TABLE test_table (test1 int, test2 text, test3 int)");
         dbc.execute("INSERT INTO test_table (test1, test2, test3) VALUES (3, 'test text', 4)");
 

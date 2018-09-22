@@ -1,5 +1,12 @@
-package com.github.xachman;
+package com.github.xachman.sqlite;
 
+import com.github.xachman.Column;
+import com.github.xachman.DatabaseConnectionI;
+import com.github.xachman.Entry;
+import com.github.xachman.Row;
+import com.github.xachman.Table;
+import com.github.xachman.Value;
+import com.github.xachman.ValueType;
 import com.github.xachman.Where.Comparison;
 import com.github.xachman.Where.Condition;
 import com.github.xachman.Where.Where;
@@ -17,7 +24,7 @@ import java.util.Map;
 
 
 public class SQLiteDatabaseHelper {
-    private SQLiteDBCI dbc = null;
+    private DatabaseConnectionI dbc = null;
     private String dbpath;
 
     public SQLiteDatabaseHelper(String dbpath) {
@@ -27,7 +34,7 @@ public class SQLiteDatabaseHelper {
 
     public void open() {
         try {
-            dbc = new SQLiteDBC(new File(dbpath));
+            dbc = new SQLiteDatabaseConnection(new File(dbpath));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
