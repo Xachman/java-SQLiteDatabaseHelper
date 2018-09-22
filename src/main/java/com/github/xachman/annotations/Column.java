@@ -5,10 +5,17 @@
  */
 package com.github.xachman.annotations;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
  *
  * @author xach
  */
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
 public @interface Column {
 
     public boolean primarykey() default false;
@@ -17,6 +24,6 @@ public @interface Column {
 
     public int length() default 0;
 
-    public String type() default "VARCHAR";
+    public String type() default "";
     
 }

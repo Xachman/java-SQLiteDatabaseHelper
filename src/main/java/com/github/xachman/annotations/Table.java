@@ -5,10 +5,15 @@
  */
 package com.github.xachman.annotations;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
  *
  * @author xach
  */
+@Retention(RetentionPolicy.RUNTIME)
 public @interface Table {
 
     public String name();

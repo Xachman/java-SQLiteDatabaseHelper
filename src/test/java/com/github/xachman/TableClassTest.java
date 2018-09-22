@@ -6,6 +6,7 @@
 package com.github.xachman;
 
 import com.github.xachman.mocks.User;
+import com.github.xachman.mocks.UsersAnnotation;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -36,12 +37,12 @@ public class TableClassTest {
     }    
     @Test
     public void testAnnotations() {
-        TableClass tableClass = new TableClass(User.class);
+        TableClass tableClass = new TableClass(UsersAnnotation.class);
         
         String sql = tableClass.createTableSQL();
 
         String expectSql = "CREATE TABLE IF NOT EXISTS users_table ("+ 
-                            "id INTEGER PRIMARYKEY AUTOINCREMENT,"+
+                            "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"+
                             "first_name VARCHAR(255),"+
                             "last_name VARCHAR(255),"+
                             "password VARCHAR(255),"+

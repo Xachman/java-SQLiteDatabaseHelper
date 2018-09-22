@@ -20,7 +20,7 @@ public abstract class Table {
             count++;
             columnSQL += column.name()+" "+column.type();
             if(column.isPrimaryKey()) {
-                columnSQL += " PRIMARY KEY";
+                columnSQL += " NOT NULL PRIMARY KEY";
             }
             if(column.isAutoincrement()) {
                 columnSQL += " AUTOINCREMENT";
