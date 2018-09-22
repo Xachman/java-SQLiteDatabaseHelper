@@ -42,7 +42,7 @@ public class SQLiteDatabaseHelper {
     }
 
     public Row insert(Table table, Map<String,String> values) {
-            String sql = "INSERT INTO " + table.tableName() + insertValuesSQL(table, values);
+            String sql = "INSERT INTO " + table.tableName() +" " + insertValuesSQL(table, values);
             dbc.prepareUpdateStatement(sql, convertColumnMapToValueList(table, values));
             List<Row> rows = dbc.prepareStatement("SELECT * FROM " + table.tableName() + " ORDER BY id DESC LIMIT 1", null);
             return rows.get(0);
